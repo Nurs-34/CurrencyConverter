@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="light_blue">#ADD8E6</color>
+    <color name="light_grey">#B0B7C6</color>
+    <color name="ic_launcher_currency_background">#0A2287</color>
+    <color name="exchange_stroke_color">#000</color>
+    <color name="orange">#F9A825</color>
+    <color name="dark_orange">#EF6C00</color>
+    <color name="blue_200">#00BCD4</color>
+    <color name="green">#4CAF50</color>
+
+</resources>

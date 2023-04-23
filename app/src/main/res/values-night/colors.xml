@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="exchange_stroke_color">#fff</color>
+    <color name="orange">#FFA000</color>
+    <color name="dark_orange">#FF8F00</color>
+    <color name="green">#4CAF50</color>
+</resources>

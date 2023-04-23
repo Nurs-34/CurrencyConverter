@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CurrencyConverter" parent="Theme.Material3.DayNight">
+
+        <item name="colorPrimary">@color/orange</item>
+        <item name="colorPrimaryDark">@color/dark_orange</item>
+        <item name="colorAccent">@color/green</item>
+    </style>
+
+    <style name="Theme.Splash" parent="Theme.Material3.Light">
+        <item name="android:background">@color/ic_launcher_currency_background</item>
+        <item name="android:statusBarColor">@color/ic_launcher_currency_background</item>
+    </style>
+
+</resources>
