@@ -19,7 +19,7 @@ interface RestApiInterface {
 
     companion object {
         private const val BASE_URL = "https://api.fastforex.io"
-        private const val API_KEY = "f38f8d5db5-77f9c0df8a-rt7ws6"
+        private const val API_KEY = "a8951066d9-e1ac898b75-rtlqix"
 
         private val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().apply {
