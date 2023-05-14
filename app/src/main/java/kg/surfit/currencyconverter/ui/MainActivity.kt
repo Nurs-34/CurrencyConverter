@@ -1,13 +1,15 @@
 package kg.surfit.currencyconverter.ui
 
 import android.os.Bundle
-import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kg.surfit.currencyconverter.R
 import kg.surfit.currencyconverter.databinding.ActivityMainBinding
 import kg.surfit.currencyconverter.utils.widgets.CurrencyTextWatcher
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,5 +58,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.mainActionFlow.onEach { action ->
+            when (action) {
+                is MainAction.ShowApiErrorToast -> {
+                    Toast.makeText(
+                        applicationContext, "Ваш api key просрочен", Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is MainAction.ShowErrorToast -> {
+                    Toast.makeText(
+                        applicationContext, "Что-то пошло не так)))", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }.launchIn(lifecycleScope)
     }
 }

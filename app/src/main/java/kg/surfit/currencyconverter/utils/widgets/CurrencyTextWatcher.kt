@@ -24,8 +24,8 @@ class CurrencyTextWatcher(
 
     private fun updateEditText(fromEditText: EditText, toEditText: EditText, rate: Double?) {
         val inputString = fromEditText.text.toString()
-        if (isValidInput(inputString)) {
-            val sum: Double = inputString.toDouble() * rate!!
+        if (isValidInput(inputString) && rate != null) {
+            val sum: Double = inputString.toDouble() * rate
             val total: String = String.format("%.2f", sum)
             toEditText.setText(total)
         } else if (inputString.isEmpty() && !editTextTo.text.isNullOrEmpty()) {

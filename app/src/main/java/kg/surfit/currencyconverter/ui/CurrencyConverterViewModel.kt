@@ -15,11 +15,13 @@ import androidx.lifecycle.viewModelScope
 import kg.surfit.currencyconverter.R
 import kg.surfit.currencyconverter.repository.CurrencyRepository
 import kg.surfit.currencyconverter.utils.network.RestApiInterface
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class CurrencyConverterViewModel : ViewModel() {
     private val repository: CurrencyRepository = CurrencyRepository(RestApiInterface.invoke())
+    val mainActionFlow: MutableSharedFlow<MainAction> = MutableSharedFlow()
 
     var currencyRate: Double? = null
     var defaultFromCurrency: String = "USD"
@@ -35,12 +37,18 @@ class CurrencyConverterViewModel : ViewModel() {
     fun fetchCurrencies(fromCurrency: String, toCurrency: String) {
         viewModelScope.launch {
             try {
-                currencyRate =
-                    repository.fetchExchangeRates(fromCurrency, toCurrency).body()?.currencies?.get(
-                        toCurrency
-                    )
-                Log.e("CurrencyRate", currencyRate.toString())
+                var response = repository.fetchExchangeRates(fromCurrency, toCurrency)
+                if (response.isSuccessful) {
+                    currencyRate =
+                        response
+                            .body()?.currencies?.get(
+                                toCurrency
+                            )
+                } else {
+                    mainActionFlow.emit(MainAction.ShowApiErrorToast)
+                }
             } catch (e: Exception) {
+                mainActionFlow.emit(MainAction.ShowErrorToast)
                 Log.e("CurrencyConverterVM", "Error fetching exchange rates", e)
             }
         }
@@ -98,5 +106,10 @@ class CurrencyConverterViewModel : ViewModel() {
         )
         return spannableText
     }
+}
+
+sealed class MainAction {
+    object ShowErrorToast : MainAction()
+    object ShowApiErrorToast : MainAction()
 }
 
