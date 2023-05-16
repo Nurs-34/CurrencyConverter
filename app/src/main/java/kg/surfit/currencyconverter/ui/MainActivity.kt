@@ -60,6 +60,12 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.mainActionFlow.onEach { action ->
             when (action) {
+                is MainAction.ShowScrapErrorToast -> {
+                    Toast.makeText(
+                        applicationContext, "Возможно какие-то проблемы с парсингом", Toast.LENGTH_SHORT
+                    ).show()
+                }
+
                 is MainAction.ShowApiErrorToast -> {
                     Toast.makeText(
                         applicationContext, "Ваш api key просрочен", Toast.LENGTH_SHORT

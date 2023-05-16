@@ -14,30 +14,44 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kg.surfit.currencyconverter.R
 import kg.surfit.currencyconverter.repository.CurrencyRepository
+import kg.surfit.currencyconverter.utils.network.CurrencyFetcher
 import kg.surfit.currencyconverter.utils.network.RestApiInterface
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
 
 class CurrencyConverterViewModel : ViewModel() {
     private val repository: CurrencyRepository = CurrencyRepository(RestApiInterface.invoke())
     val mainActionFlow: MutableSharedFlow<MainAction> = MutableSharedFlow()
 
     var currencyRate: Double? = null
-    var defaultFromCurrency: String = "USD"
-    var defaultToCurrency: String = "KGS"
+    var defaultFromCurrency: String = "usd"
+    var defaultToCurrency: String = "kgs"
 
     val fromCurrency = MutableStateFlow(defaultFromCurrency)
     val toCurrency = MutableStateFlow(defaultToCurrency)
+
+    private val currencyFetcher = CurrencyFetcher(this)
 
     init {
         fetchCurrencies(defaultFromCurrency, defaultToCurrency)
     }
 
+
     fun fetchCurrencies(fromCurrency: String, toCurrency: String) {
         viewModelScope.launch {
+            currencyFetcher.fetchCurrencies(fromCurrency, toCurrency)
+        }
+    }
+
+    // here used trial api from ApiForex
+    fun fetchCurrenciesApiForex(fromCurrency: String, toCurrency: String) {
+        viewModelScope.launch {
             try {
-                var response = repository.fetchExchangeRates(fromCurrency, toCurrency)
+                val response = repository.fetchExchangeRates(fromCurrency, toCurrency)
                 if (response.isSuccessful) {
                     currencyRate =
                         response
@@ -63,12 +77,12 @@ class CurrencyConverterViewModel : ViewModel() {
                 val selectedCurrency = currencies[which]
                 when (currency) {
                     1 -> {
-                        fromCurrency.value = selectedCurrency
+                        fromCurrency.value = selectedCurrency.lowercase()
                         button.text = fromCurrency.value
                     }
 
                     2 -> {
-                        toCurrency.value = selectedCurrency
+                        toCurrency.value = selectedCurrency.lowercase()
                         button.text = toCurrency.value
                     }
                 }
@@ -80,11 +94,11 @@ class CurrencyConverterViewModel : ViewModel() {
 
     fun setCurrencyImageResource(currency: String, imageView: ImageView) {
         val imageResource = when (currency) {
-            "USD" -> R.drawable.ic_flag_us
-            "EUR" -> R.drawable.ic_flag_eu
-            "RUB" -> R.drawable.ic_flag_ru
-            "KGS" -> R.drawable.ic_flag_kg
-            "KZT" -> R.drawable.ic_flag_kz
+            "usd" -> R.drawable.ic_flag_us
+            "eur" -> R.drawable.ic_flag_eu
+            "rub" -> R.drawable.ic_flag_ru
+            "kgs" -> R.drawable.ic_flag_kg
+            "kzt" -> R.drawable.ic_flag_kz
             else -> null
         }
         imageResource?.let { imageView.setImageResource(it) }
@@ -110,6 +124,7 @@ class CurrencyConverterViewModel : ViewModel() {
 
 sealed class MainAction {
     object ShowErrorToast : MainAction()
+    object ShowScrapErrorToast : MainAction()
     object ShowApiErrorToast : MainAction()
 }
 
